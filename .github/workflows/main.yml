@@ -24,7 +24,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci
-      - run: node scripts/generate-icons.js
       - run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /MoonAuth
