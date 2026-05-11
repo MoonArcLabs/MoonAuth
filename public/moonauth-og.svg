@@ -1,0 +1,11 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#000000"/>
+  <circle cx="380" cy="315" r="180" fill="#7c5cfc" fill-opacity="0.05"/>
+  <circle cx="380" cy="315" r="240" fill="#7c5cfc" fill-opacity="0.03"/>
+  <g transform="rotate(15 380 315)">
+    <circle cx="320" cy="315" r="160" fill="white"/>
+    <circle cx="427" cy="315" r="135" fill="#000000"/>
+  </g>
+  <text x="700" y="280" font-family="sans-serif" font-weight="700" font-size="72" fill="white">MoonAuth</text>
+  <text x="700" y="340" font-family="sans-serif" font-size="24" fill="#888">Your codes. Your device. Your secrets.</text>
+</svg>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>MoonAuth — Offline</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #000;
+      color: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      gap: 1.5rem;
+      padding: 2rem;
+      text-align: center;
+    }
+    svg { opacity: 0.8; }
+    h1 { font-size: 1.5rem; font-weight: 700; }
+    p { font-size: 0.875rem; color: #888; max-width: 280px; line-height: 1.6; }
+    a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #7c5cfc;
+      color: white;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <svg width="64" height="64" viewBox="0 0 100 100" fill="none">
+    <rect width="100" height="100" fill="#000" />
+    <g transform="rotate(15 50 50)">
+      <circle cx="42" cy="50" r="26" fill="white" />
+      <circle cx="57" cy="50" r="22" fill="#000" />
+    </g>
+  </svg>
+  <h1>You're offline</h1>
+  <p>MoonAuth works offline — your codes are stored on your device. Please check your internet connection and try again.</p>
+  <a href="/">Try again</a>
+</body>
+</html>
