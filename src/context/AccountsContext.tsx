@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useEffect,
+  useRef,
   ReactNode,
 } from 'react'
 import type { Account, AccountWithCode } from '@/types/account'
@@ -29,16 +30,27 @@ const AccountsContext = createContext<AccountsContextValue | null>(null)
 async function attachCodes(accounts: Account[]): Promise<AccountWithCode[]> {
   return Promise.all(
     accounts.map(async (acc) => {
-      const [code, nextCode] = await Promise.all([
-        generateTOTP(acc.secret, { algorithm: acc.algorithm, digits: acc.digits, period: acc.period }),
-        generateTOTP(acc.secret, { algorithm: acc.algorithm, digits: acc.digits, period: acc.period }),
-      ])
-      return {
-        ...acc,
-        code,
-        nextCode,
-        timeRemaining: getTimeRemaining(acc.period),
-        progress: getTimeProgress(acc.period),
+      try {
+        const code = await generateTOTP(acc.secret, {
+          algorithm: acc.algorithm,
+          digits: acc.digits,
+          period: acc.period,
+        })
+        return {
+          ...acc,
+          code,
+          nextCode: code,
+          timeRemaining: getTimeRemaining(acc.period),
+          progress: getTimeProgress(acc.period),
+        }
+      } catch {
+        return {
+          ...acc,
+          code: '------',
+          nextCode: '------',
+          timeRemaining: getTimeRemaining(acc.period),
+          progress: getTimeProgress(acc.period),
+        }
       }
     })
   )
@@ -49,14 +61,20 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
   const [accounts, setAccounts] = useState<AccountWithCode[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { cryptoKey } = useSecurityContext()
+  const rawAccountsRef = useRef<Account[]>([])
+
+  rawAccountsRef.current = rawAccounts
 
   const refresh = useCallback(async () => {
     setIsLoading(true)
     try {
       const loaded = await loadAccounts(cryptoKey ?? undefined)
       setRawAccounts(loaded)
+      rawAccountsRef.current = loaded
       const withCodes = await attachCodes(loaded)
       setAccounts(withCodes)
+    } catch {
+      // ignore
     } finally {
       setIsLoading(false)
     }
@@ -68,11 +86,13 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const withCodes = await attachCodes(rawAccounts)
+      const current = rawAccountsRef.current
+      if (current.length === 0) return
+      const withCodes = await attachCodes(current)
       setAccounts(withCodes)
     }, 1000)
     return () => clearInterval(interval)
-  }, [rawAccounts])
+  }, [])
 
   const addAccount = useCallback(
     async (config: ParsedOtpAuth) => {
@@ -88,49 +108,52 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
         updatedAt: Date.now(),
       }
       await saveAccount(account, cryptoKey ?? undefined)
-      setRawAccounts((prev) => [...prev, account])
-      const withCodes = await attachCodes([...rawAccounts, account])
+      // Re-read from DB to confirm save succeeded
+      const loaded = await loadAccounts(cryptoKey ?? undefined)
+      setRawAccounts(loaded)
+      rawAccountsRef.current = loaded
+      const withCodes = await attachCodes(loaded)
       setAccounts(withCodes)
     },
-    [cryptoKey, rawAccounts]
+    [cryptoKey]
   )
 
   const updateAccount = useCallback(
     async (id: string, updates: Partial<Account>) => {
-      const updated = rawAccounts.map((a) =>
+      const updated = rawAccountsRef.current.map((a) =>
         a.id === id ? { ...a, ...updates, updatedAt: Date.now() } : a
       )
       const target = updated.find((a) => a.id === id)
       if (target) await saveAccount(target, cryptoKey ?? undefined)
       setRawAccounts(updated)
+      rawAccountsRef.current = updated
       const withCodes = await attachCodes(updated)
       setAccounts(withCodes)
     },
-    [cryptoKey, rawAccounts]
+    [cryptoKey]
   )
 
-  const deleteAccount = useCallback(
-    async (id: string) => {
-      await dbDeleteAccount(id)
-      const updated = rawAccounts.filter((a) => a.id !== id)
-      setRawAccounts(updated)
-      const withCodes = await attachCodes(updated)
-      setAccounts(withCodes)
-    },
-    [rawAccounts]
-  )
+  const deleteAccount = useCallback(async (id: string) => {
+    await dbDeleteAccount(id)
+    const updated = rawAccountsRef.current.filter((a) => a.id !== id)
+    setRawAccounts(updated)
+    rawAccountsRef.current = updated
+    const withCodes = await attachCodes(updated)
+    setAccounts(withCodes)
+  }, [])
 
   const importAccounts = useCallback(
     async (toImport: Account[]) => {
       for (const acc of toImport) {
         await saveAccount(acc, cryptoKey ?? undefined)
       }
-      const merged = [...rawAccounts, ...toImport.filter((imp) => !rawAccounts.find((a) => a.id === imp.id))]
-      setRawAccounts(merged)
-      const withCodes = await attachCodes(merged)
+      const loaded = await loadAccounts(cryptoKey ?? undefined)
+      setRawAccounts(loaded)
+      rawAccountsRef.current = loaded
+      const withCodes = await attachCodes(loaded)
       setAccounts(withCodes)
     },
-    [cryptoKey, rawAccounts]
+    [cryptoKey]
   )
 
   return (

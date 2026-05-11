@@ -17,9 +17,12 @@ export function useInstallPrompt() {
     setIsDismissed(dismissed)
 
     const ua = navigator.userAgent
-    const ios = /iPhone|iPad|iPod/.test(ua)
+    const ios = /iPhone|iPad|iPod/.test(ua) && !('MSStream' in window)
     setIsIOS(ios)
-    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches)
+    const standalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      ('standalone' in navigator && (navigator as { standalone?: boolean }).standalone === true)
+    setIsStandalone(standalone)
 
     const handler = (e: Event) => {
       e.preventDefault()

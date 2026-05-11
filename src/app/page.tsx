@@ -75,7 +75,8 @@ export default function HomePage() {
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="flex flex-col h-dvh max-h-dvh bg-black"
+      className="flex flex-col bg-black"
+      style={{ height: '100dvh', paddingTop: 'env(safe-area-inset-top)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}
     >
       <Header
         onSettings={() => setSettingsOpen(true)}

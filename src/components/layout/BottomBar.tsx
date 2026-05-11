@@ -8,7 +8,7 @@ interface BottomBarProps {
 
 export function BottomBar({ onAdd }: BottomBarProps) {
   return (
-    <div className="px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+16px)] border-t border-white/[0.04]">
+    <div className="px-4 pt-3 border-t border-white/[0.04]" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}>
       <motion.button
         onClick={onAdd}
         whileHover={{ scale: 1.02 }}
