@@ -2,7 +2,8 @@
 
 [![PWA](https://img.shields.io/badge/PWA-ready-7c5cfc)](https://web.dev/progressive-web-apps/)
 [![Offline](https://img.shields.io/badge/offline-first-22c55e)](https://web.dev/offline/)
-[![No tracking](https://img.shields.io/badge/tracking-none-000)](https://moonauth.app)
+[![No tracking](https://img.shields.io/badge/tracking-none-000)](https://moonarclabs.github.io/MoonAuth) 
+
 
 > **Premium offline TOTP authenticator. Your codes, your device.**
 
