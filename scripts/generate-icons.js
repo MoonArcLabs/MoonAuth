@@ -1,9 +1,4 @@
 #!/usr/bin/env node
-/**
- * Generates all PWA icon PNGs from the SVG source.
- * Run: node scripts/generate-icons.js
- * Requires: npm install sharp (already in devDependencies)
- */
 
 const sharp = require('sharp')
 const path = require('path')
@@ -51,13 +46,13 @@ async function generateIcons() {
 
   // Apple touch icon
   await sharp(moonSVG(180)).resize(180, 180).png().toFile(path.join(iconsDir, 'apple-touch-icon.png'))
-  console.log('  ✓ apple-touch-icon.png')
+  console.log('  apple-touch-icon.png')
 
   // Favicons
   await sharp(moonSVG(16)).resize(16, 16).png().toFile(path.join(iconsDir, 'favicon-16x16.png'))
   await sharp(moonSVG(32)).resize(32, 32).png().toFile(path.join(iconsDir, 'favicon-32x32.png'))
-  console.log('  ✓ favicon-16x16.png')
-  console.log('  ✓ favicon-32x32.png')
+  console.log('  favicon-16x16.png')
+  console.log(' favicon-32x32.png')
 
   // OG image
   const ogSVG = fs.readFileSync(path.join(publicDir, 'moonauth-og.svg'))
