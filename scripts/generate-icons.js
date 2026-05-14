@@ -36,13 +36,13 @@ async function generateIcons() {
     const svg = moonSVG(size)
     const outPath = path.join(iconsDir, `icon-${size}x${size}.png`)
     await sharp(svg).resize(size, size).png().toFile(outPath)
-    console.log(`  ✓ icon-${size}x${size}.png`)
+    console.log(`  icon-${size}x${size}.png`)
   }
 
   // Maskable icon (safe zone: 80% center)
   const maskableSVG = moonSVG(512, 51) // ~10% padding each side
   await sharp(maskableSVG).resize(512, 512).png().toFile(path.join(iconsDir, 'maskable-icon-512x512.png'))
-  console.log('  ✓ maskable-icon-512x512.png')
+  console.log('  maskable-icon-512x512.png')
 
   // Apple touch icon
   await sharp(moonSVG(180)).resize(180, 180).png().toFile(path.join(iconsDir, 'apple-touch-icon.png'))
@@ -57,7 +57,7 @@ async function generateIcons() {
   // OG image
   const ogSVG = fs.readFileSync(path.join(publicDir, 'moonauth-og.svg'))
   await sharp(ogSVG).resize(1200, 630).png().toFile(path.join(publicDir, 'moonauth-og.png'))
-  console.log('  ✓ moonauth-og.png')
+  console.log('  moonauth-og.png')
 
   // iOS splash screens
   const splashSizes = [
@@ -87,7 +87,7 @@ async function generateIcons() {
 </svg>`)
 
     await sharp(splashSVG).resize(w, h).png().toFile(path.join(splashDir, name))
-    console.log(`  ✓ ${name}`)
+    console.log(`  ${name}`)
   }
 
   // favicon.ico note
